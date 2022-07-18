@@ -1,0 +1,235 @@
+{
+  "Outputs": {
+    "SumoPandaLambda": {
+      "Description": "Sumo Logic Panda Lambda Function ARN",
+      "Value": {
+        "Fn::GetAtt": [
+          "SumoPandaLambda",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": {
+          "Fn::Join": [
+            "-",
+            [
+              "SumoPandaLambdaArn",
+              {
+                "Fn::Select": [
+                  "2",
+                  {
+                    "Fn::Split": [
+                      "/",
+                      {
+                        "Ref": "AWS::StackId"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "SumoPandaAccessID": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Access ID as per WatchGuard cloud portal"
+    },
+    "SumoPandaAccessPassword": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Access password as per WatchGuard cloud portal"
+    },
+    "SumoPandaAPIVersion": {
+      "Type": "String",
+      "Default": "v1",
+      "Description": "Panda portal API version, by default: v1"
+    },
+    "SumoPandaAWSRegion": {
+      "Type": "String",
+      "Default": "us-east-2",
+      "Description": "AWS region for parameter store, by default: us-east-2"
+    },
+    "SumoPandaAPIKey": {
+      "Type": "String",
+      "Default": "",
+      "Description": "API key as provided by WatchGuard"
+    },
+    "SumoPandaAuthURL": {
+      "Type": "String",
+      "Default": "https://api.deu.cloud.watchguard.com/oauth/token",
+      "Description": "URL to obtain (temporary) authentication token for cloud api access"
+    },
+    "SumoPandaBaseURL": {
+      "Type": "String",
+      "Default": "https://api.deu.cloud.watchguard.com/rest/",
+      "Description": "Base URL to access the panda portal"
+    },
+    "SumoPandaAccountID": {
+      "Type": "String",
+      "Default": "ACC-1234567",
+      "Description": "Watchguard cloud account ID"
+    },
+    "SumoPandaLogLevel": {
+      "Type": "String",
+      "Default": "WARNING",
+      "AllowedValues": [
+        "CRITICAL",
+        "ERROR",
+        "WARNING",
+        "DEBUG",
+        "INFO",
+        "NOTSET"
+      ],
+      "Description": "Lambda function loglevel, by default: WARNING"
+    },
+    "SumoPandaEndpoint": {
+      "Type": "String",
+      "Default": "",
+      "Description": "SumoLogic secret endpoint for submission of events to your Sumo account"
+    },
+    "SumoPandaPeriod": {
+      "Type": "Number",
+      "Default": 7,
+      "Description": "Period in days for collecting data, either 7 or 1"
+    },
+    "SumoPandaS3Bucket": {
+      "Type": "String",
+      "Default": "",
+      "Description": "S3 bucket where lambda zip archive is located"
+    },
+    "SumoPandaS3BucketKey": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Key within bucket where lambda zip archive is located"
+    }
+  },
+  "Resources": {
+    "SumoPandaLambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "SumoPandaLambdaRole",
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Path": "/",
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonSSMFullAccess",
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ]
+      }
+    },
+    "SumoPandaLambdaRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Sumo Logic Panda lambda trigger Rule",
+        "Name": "SumoPandaTrigger",
+        "ScheduleExpression": "rate(2 hours)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "SumoPandaLambda",
+                "Arn"
+              ]
+            },
+            "Id": "SumoPandaLambda"
+          }
+        ]
+      }
+    },
+    "LambdaSchedulePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "SumoPandaLambda",
+            "Arn"
+          ]
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "SumoPandaLambdaRule",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "SumoPandaLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "SumoPandaS3Bucket"
+          },
+          "S3Key": {
+            "Ref": "SumoPandaS3BucketKey"
+          }
+        },
+        "Description": "Lambda function which extracts recent panda data from portal and sends to sumo logic endpoint",
+        "FunctionName": "SumoPandaLambda",
+        "Handler": "panda.lambda_handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "SumoPandaLambdaRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "python3.9",
+        "Timeout": 900,
+        "Environment": {
+          "Variables": {
+            "accessid": {
+              "Ref": "SumoPandaAccessID"
+            },
+            "accesspassword": {
+              "Ref": "SumoPandaAccessPassword"
+            },
+            "loglevel": {
+              "Ref": "SumoPandaLogLevel"
+            },
+            "accountid": {
+              "Ref": "SumoPandaAccountID"
+            },
+            "apikey": {
+              "Ref": "SumoPandaAPIKey"
+            },
+            "authurl": {
+              "Ref": "SumoPandaAuthURL"
+            },
+            "baseurl": {
+              "Ref": "SumoPandaBaseURL"
+            },
+            "endpoint": {
+              "Ref": "SumoPandaEndpoint"
+            },
+            "period": {
+              "Ref": "SumoPandaPeriod"
+            },
+            "region": {
+              "Ref": "SumoPandaAWSRegion"
+            },
+            "version": {
+              "Ref": "SumoPandaAPIVersion"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,268 @@
+{
+    "type": "FolderSyncDefinition",
+    "name": "Panda",
+    "description": "",
+    "children": [
+        {
+            "type": "DashboardV2SyncDefinition",
+            "name": "Panda Overview",
+            "description": "",
+            "title": "Panda Overview",
+            "rootPanel": null,
+            "theme": "Light",
+            "topologyLabelMap": {
+                "data": {}
+            },
+            "refreshInterval": 0,
+            "timeRange": {
+                "type": "BeginBoundedTimeRange",
+                "from": {
+                    "type": "RelativeTimeRangeBoundary",
+                    "relativeTime": "-4w2d"
+                },
+                "to": null
+            },
+            "layout": {
+                "layoutType": "Grid",
+                "layoutStructures": [
+                    {
+                        "key": "panel465F3347940C784A",
+                        "structure": "{\"height\":6,\"width\":5,\"x\":5,\"y\":0}"
+                    },
+                    {
+                        "key": "panel17EF4EA2BCC52847",
+                        "structure": "{\"height\":6,\"width\":12,\"x\":12,\"y\":6}"
+                    },
+                    {
+                        "key": "panel4B6147BA8D18C848",
+                        "structure": "{\"height\":6,\"width\":12,\"x\":0,\"y\":6}"
+                    },
+                    {
+                        "key": "panelBCE5E84D96381B40",
+                        "structure": "{\"height\":6,\"width\":12,\"x\":12,\"y\":12}"
+                    },
+                    {
+                        "key": "panelD0FFCBC78FBECA49",
+                        "structure": "{\"height\":6,\"width\":12,\"x\":0,\"y\":12}"
+                    },
+                    {
+                        "key": "panelCC78487E83854A45",
+                        "structure": "{\"height\":6,\"width\":5,\"x\":0,\"y\":0}"
+                    },
+                    {
+                        "key": "panel736234CF8A5D6844",
+                        "structure": "{\"height\":6,\"width\":5,\"x\":10,\"y\":0}"
+                    },
+                    {
+                        "key": "panelF169F427B6E37B41",
+                        "structure": "{\"height\":6,\"width\":8,\"x\":15,\"y\":0}"
+                    }
+                ]
+            },
+            "panels": [
+                {
+                    "id": null,
+                    "key": "panel465F3347940C784A",
+                    "title": "Detected event types",
+                    "visualSettings": "{\"general\":{\"mode\":\"singleValueMetrics\",\"type\":\"svp\"},\"series\":{},\"svp\":{\"label\":\"Event Types\",\"gauge\":{\"show\":true,\"max\":18},\"sparkline\":{\"show\":false}}}",
+                    "keepVisualSettingsConsistentWithParent": true,
+                    "panelType": "SumoSearchPanel",
+                    "queries": [
+                        {
+                            "queryString": "_sourcecategory = panda | count_distinct(eventtype)",
+                            "queryType": "Logs",
+                            "queryKey": "A",
+                            "metricsQueryMode": null,
+                            "metricsQueryData": null,
+                            "tracesQueryData": null,
+                            "parseMode": "Auto",
+                            "timeSource": "Message"
+                        }
+                    ],
+                    "description": "",
+                    "timeRange": null,
+                    "coloringRules": null,
+                    "linkedDashboards": []
+                },
+                {
+                    "id": null,
+                    "key": "panel17EF4EA2BCC52847",
+                    "title": "Event Types",
+                    "visualSettings": "{\"general\":{\"mode\":\"distribution\",\"type\":\"pie\"}}",
+                    "keepVisualSettingsConsistentWithParent": true,
+                    "panelType": "SumoSearchPanel",
+                    "queries": [
+                        {
+                            "queryString": "_sourcecategory = panda | count by eventdescription",
+                            "queryType": "Logs",
+                            "queryKey": "A",
+                            "metricsQueryMode": null,
+                            "metricsQueryData": null,
+                            "tracesQueryData": null,
+                            "parseMode": "Auto",
+                            "timeSource": "Message"
+                        }
+                    ],
+                    "description": "",
+                    "timeRange": null,
+                    "coloringRules": null,
+                    "linkedDashboards": []
+                },
+                {
+                    "id": null,
+                    "key": "panel4B6147BA8D18C848",
+                    "title": "Events over time",
+                    "visualSettings": "{\"general\":{\"mode\":\"timeSeries\",\"type\":\"column\"}}",
+                    "keepVisualSettingsConsistentWithParent": true,
+                    "panelType": "SumoSearchPanel",
+                    "queries": [
+                        {
+                            "queryString": "_sourcecategory = panda | timeslice 1d | count by _timeslice",
+                            "queryType": "Logs",
+                            "queryKey": "A",
+                            "metricsQueryMode": null,
+                            "metricsQueryData": null,
+                            "tracesQueryData": null,
+                            "parseMode": "Auto",
+                            "timeSource": "Message"
+                        }
+                    ],
+                    "description": "",
+                    "timeRange": null,
+                    "coloringRules": null,
+                    "linkedDashboards": []
+                },
+                {
+                    "id": null,
+                    "key": "panelBCE5E84D96381B40",
+                    "title": "Top 10 event hosts",
+                    "visualSettings": "{\"general\":{\"mode\":\"distribution\",\"type\":\"pie\"},\"series\":{}}",
+                    "keepVisualSettingsConsistentWithParent": true,
+                    "panelType": "SumoSearchPanel",
+                    "queries": [
+                        {
+                            "queryString": "_source=\"panda\" | count by host_name | sort by _count | limit 10",
+                            "queryType": "Logs",
+                            "queryKey": "A",
+                            "metricsQueryMode": null,
+                            "metricsQueryData": null,
+                            "tracesQueryData": null,
+                            "parseMode": "Auto",
+                            "timeSource": "Message"
+                        }
+                    ],
+                    "description": "",
+                    "timeRange": null,
+                    "coloringRules": null,
+                    "linkedDashboards": []
+                },
+                {
+                    "id": null,
+                    "key": "panelD0FFCBC78FBECA49",
+                    "title": "Detected Malware Items",
+                    "visualSettings": "{\"general\":{\"mode\":\"distribution\",\"type\":\"table\"},\"series\":{}}",
+                    "keepVisualSettingsConsistentWithParent": true,
+                    "panelType": "SumoSearchPanel",
+                    "queries": [
+                        {
+                            "queryString": "_source=\"panda\" | where !isEmpty(item_name) | count by item_name",
+                            "queryType": "Logs",
+                            "queryKey": "A",
+                            "metricsQueryMode": null,
+                            "metricsQueryData": null,
+                            "tracesQueryData": null,
+                            "parseMode": "Auto",
+                            "timeSource": "Message"
+                        }
+                    ],
+                    "description": "",
+                    "timeRange": null,
+                    "coloringRules": null,
+                    "linkedDashboards": []
+                },
+                {
+                    "id": null,
+                    "key": "panelCC78487E83854A45",
+                    "title": "Hours since last event",
+                    "visualSettings": "{\"general\":{\"mode\":\"singleValueMetrics\",\"type\":\"svp\"},\"series\":{},\"svp\":{\"label\":\"Hours\",\"gauge\":{\"show\":true,\"max\":48},\"sparkline\":{\"show\":false},\"rounding\":0}}",
+                    "keepVisualSettingsConsistentWithParent": true,
+                    "panelType": "SumoSearchPanel",
+                    "queries": [
+                        {
+                            "queryString": "_sourcecategory = panda | first(_messageTime) AS lasthour | now() - lasthour AS msecs | msecs/3600000 as hrs | floor(hrs) as HOURS | fields HOURS",
+                            "queryType": "Logs",
+                            "queryKey": "A",
+                            "metricsQueryMode": null,
+                            "metricsQueryData": null,
+                            "tracesQueryData": null,
+                            "parseMode": "Auto",
+                            "timeSource": "Message"
+                        }
+                    ],
+                    "description": "",
+                    "timeRange": {
+                        "type": "BeginBoundedTimeRange",
+                        "from": {
+                            "type": "RelativeTimeRangeBoundary",
+                            "relativeTime": "-1w"
+                        },
+                        "to": null
+                    },
+                    "coloringRules": null,
+                    "linkedDashboards": []
+                },
+                {
+                    "id": null,
+                    "key": "panel736234CF8A5D6844",
+                    "title": "Total events",
+                    "visualSettings": "{\"general\":{\"mode\":\"singleValueMetrics\",\"type\":\"svp\"},\"series\":{},\"svp\":{\"label\":\"Events\",\"gauge\":{\"show\":false,\"max\":18},\"sparkline\":{\"show\":false}}}",
+                    "keepVisualSettingsConsistentWithParent": true,
+                    "panelType": "SumoSearchPanel",
+                    "queries": [
+                        {
+                            "queryString": "_sourcecategory = panda | count",
+                            "queryType": "Logs",
+                            "queryKey": "A",
+                            "metricsQueryMode": null,
+                            "metricsQueryData": null,
+                            "tracesQueryData": null,
+                            "parseMode": "Auto",
+                            "timeSource": "Message"
+                        }
+                    ],
+                    "description": "",
+                    "timeRange": null,
+                    "coloringRules": null,
+                    "linkedDashboards": []
+                },
+                {
+                    "id": null,
+                    "key": "panelF169F427B6E37B41",
+                    "title": "Detected Malware Items by host",
+                    "visualSettings": "{\"title\":{\"fontSize\":14},\"general\":{\"type\":\"honeyComb\",\"displayType\":\"default\",\"mode\":\"honeyComb\"},\"honeyComb\":{\"thresholds\":[{\"from\":null,\"to\":null,\"color\":\"#98ECA9\"},{\"from\":null,\"to\":null,\"color\":\"#F2DA73\"},{\"from\":null,\"to\":null,\"color\":\"#FFB5B5\"}],\"shape\":\"hexagon\",\"groupBy\":[],\"aggregationType\":\"count\"},\"series\":{}}",
+                    "keepVisualSettingsConsistentWithParent": true,
+                    "panelType": "SumoSearchPanel",
+                    "queries": [
+                        {
+                            "queryString": "_source=\"panda\" | count by host_name",
+                            "queryType": "Logs",
+                            "queryKey": "A",
+                            "metricsQueryMode": null,
+                            "metricsQueryData": null,
+                            "tracesQueryData": null,
+                            "parseMode": "Auto",
+                            "timeSource": "Message"
+                        }
+                    ],
+                    "description": "Events by host",
+                    "timeRange": null,
+                    "coloringRules": null,
+                    "linkedDashboards": []
+                }
+            ],
+            "variables": [],
+            "coloringRules": []
+        }
+    ]
+}
+

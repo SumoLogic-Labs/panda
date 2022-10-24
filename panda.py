@@ -221,6 +221,14 @@ def ExtractSecurityEvents(baseurl,auth,opts,logger,cache,eventwriter) :
         #params={'top':'2','count':'true'}
         params={}
         r = RetrievePandaEvents(opts.accountid,opts.apikey,auth,url,params)
+        if r.status_code != 200:
+            # Output debug information
+            logger.warning("\n Return Code: " + str(r.status_code) + " " + r.reason)
+            logger.warning("Path: " + r.request.path_url)
+            logger.warning("Headers: ")
+            logger.warning(r.request.headers)
+            continue
+
         result=r.json()
         if result==None :
             continue
@@ -265,6 +273,13 @@ def ExtractUnmanagedDevices(baseurl,auth,opts,logger,cache,eventwriter) :
         command='api/{}/accounts/{}/unmanageddevices'.format(opts.version,opts.accountid)
         url='{}{}'.format(baseurl,command)
         r = RetrievePandaEvents(opts.accountid,opts.apikey,auth,url,{})
+        if r.status_code != 200:
+            # Output debug information
+            logger.warning("\n Return Code: " + str(r.status_code) + " " + r.reason)
+            logger.warning("Path: " + r.request.path_url)
+            logger.warning("Headers: ")
+            logger.warning(r.request.headers)
+            return
         result=r.json()
         if result==None :
             return

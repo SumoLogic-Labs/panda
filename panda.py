@@ -284,7 +284,7 @@ def ExtractUnmanagedDevices(baseurl,auth,opts,logger,cache,eventwriter) :
         if result==None :
             return
         for d in result['data'] :
-            d['TIMESTAMP'] = datetime.dateime.now(datetime.timezone.utc).strftime(standarddateformat)
+            d['TIMESTAMP'] = datetime.datetime.now(datetime.timezone.utc).strftime(standarddateformat)
             d['eventdescription']='unmanaged'
             eventwriter.send(d)
             eventcount+=1
